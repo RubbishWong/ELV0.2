@@ -26,7 +26,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Keyboard" />
         <activity android:name=".CPU" />
-        <activity android:name=".Printer"></activity>
+        <activity android:name=".Printer" />
+        <activity android:name=".Memory"></activity>
     </application>
 
 </manifest>

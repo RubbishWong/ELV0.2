@@ -2,6 +2,7 @@ package com.example.dell.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,97 +17,94 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity {
 
+    /*正式版需用文件存储这些数据，在该版本中回到主菜单后下面四个数据会重置*/
+    private  boolean part0IsClear;
+    private  boolean part1IsClear;
+    private  boolean part2IsClear;
+    private  boolean part3IsClear;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode){
+            case 0:
+                if(resultCode == RESULT_OK){
+                    part0IsClear = data.getBooleanExtra("data_return0",false);
+                }break;
+            case 1:
+                if(resultCode == RESULT_OK){
+                    part1IsClear = data.getBooleanExtra("data_return1",false);
+                }break;
+            case 2:
+                if(resultCode == RESULT_OK){
+                    part2IsClear = data.getBooleanExtra("data_return2",false);
+                }break;
+            case 3:
+                if(resultCode == RESULT_OK){
+                    part3IsClear = data.getBooleanExtra("data_return3",false);
+                }break;
+                default:
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        Button cpu = (Button) findViewById(R.id.CPU);
+        Button keyboard = (Button) findViewById(R.id.keyboard);
+        Button memory = (Button) findViewById(R.id.memory);
+        Button printer = (Button) findViewById(R.id.printer);
+        Button returnMain = (Button)findViewById(R.id.returnToMain);
 
-        /*初始化关卡按钮并给与监听，存储于链表listOfPart中*/
-        Part Cpu = new Part(R.id.CPU);
-        Cpu.getButton().setOnClickListener(new View.OnClickListener() {
+        cpu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent0 = new Intent(MapActivity.this,CPU.class);
                 startActivityForResult(intent0,0);
             }
         });
-        MapActivity ma = new MapActivity();
-        LinkedList<Part> listOfPart= new LinkedList<>();
-        listOfPart = ma.init();
 
-    }
-
-    /*初始化按钮*/
-    private LinkedList<Part> init(){
-        final LinkedList<Part> listOfPart= new LinkedList<>();
-        listOfPart.add(new Part(R.id.keyboard));
-        listOfPart.add(new Part(R.id.memory));
-        listOfPart.add(new Part(R.id.printer));
-
-        listOfPart.get(0).getButton().setOnClickListener(new View.OnClickListener() {
+        keyboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*检测前一个关卡是否完成，完成可进入下一个关卡，第一关默认可进入*/
                 Intent intent1 = new Intent(MapActivity.this,Keyboard.class);
                 startActivityForResult(intent1,1);
             }
-
         });
 
-        listOfPart.get(1).getButton().setOnClickListener(new View.OnClickListener() {
+        memory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent2 = new Intent(MapActivity.this,CPU.class);
-                if(listOfPart.get(1).Isfinished){
+                if(part1IsClear){
+                    Intent intent2 = new Intent(MapActivity.this,Memory.class);
                     startActivityForResult(intent2,2);
                 }else{
-                    Toast.makeText(MapActivity.this,"请完成前面的关卡",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapActivity.this,"请先完成键盘关卡",Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        listOfPart.get(2).getButton().setOnClickListener(new View.OnClickListener() {
+        printer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent3 = new Intent(MapActivity.this,Printer.class);
-                if(listOfPart.get(2).Isfinished){
+                if(part2IsClear){
+                    Intent intent3 = new Intent(MapActivity.this,Printer.class);
                     startActivityForResult(intent3,3);
                 }else{
-                    Toast.makeText(MapActivity.this,"请完成前面的关卡",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapActivity.this,"请先完成存储器关卡",Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        return listOfPart;
+        returnMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
-
-    /*创建一个Part内部类用于存储各个部分的状态*/
-    private class Part {
-
-        private Button button;
-        private boolean Isfinished = false;
-
-        /*返回关卡是否清除*/
-        public boolean getState(){
-            return Isfinished;
-        }
-
-        /*返回控制关卡的按钮*/
-        public Button getButton(){
-            return button;
-        }
-
-        /*关卡清除*/
-        public void partClear(){
-            Isfinished = true;
-        }
-
-        /*构造器，用于初始化按钮*/
-        public Part(int ID){
-            button = findViewById(ID);
-        }
-    }
-
 
 }

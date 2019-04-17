@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Keyboard">
+    tools:context=".Memory">
 
     <Button
-        android:id="@+id/keyboardClear"
+        android:id="@+id/memoryClear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="通关！"
